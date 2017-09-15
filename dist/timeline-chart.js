@@ -72,6 +72,10 @@
             var x = d3.time.scale().domain([minDt, maxDt]).range([groupWidth, width]);
 
             var xAxis = d3.svg.axis().scale(x).orient('bottom').tickSize(-height);
+            // i18n
+            if (options.tickFormat) {
+                xAxis.tickFormat(options.tickFormat);
+            }
 
             var zoom = d3.behavior.zoom().x(x).on('zoom', zoomed);
 
@@ -249,7 +253,8 @@
                     textTruncateThreshold: 30,
                     enableLiveTimer: false,
                     timerTickInterval: 1000,
-                    hideGroupLabels: false
+                    hideGroupLabels: false,
+                    tickFormat: undefined
                 };
                 Object.keys(ext).map(function (k) {
                     return defaultOptions[k] = ext[k];

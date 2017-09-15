@@ -34,6 +34,10 @@ class TimelineChart {
             .scale(x)
             .orient('bottom')
             .tickSize(-height);
+        // i18n
+        if (options.tickFormat) {
+            xAxis.tickFormat(options.tickFormat);
+        }
 
         let zoom = d3.behavior.zoom()
             .x(x)
@@ -254,7 +258,8 @@ class TimelineChart {
             textTruncateThreshold: 30,
             enableLiveTimer: false,
             timerTickInterval: 1000,
-            hideGroupLabels: false
+            hideGroupLabels: false,
+            tickFormat: undefined
         };
         Object.keys(ext).map(k => defaultOptions[k] = ext[k]);
         return defaultOptions;

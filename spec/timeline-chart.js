@@ -102,6 +102,62 @@ describe('TimelineChart', () => {
         })
     });
 
+    describe('i18n', () => {
+        it('shoulld be translated', () => {
+            const div = getDefaultSizeContainer();
+            const data = [{
+                label: 'Name',
+                data: [{
+                    type: TimelineChart.TYPE.POINT,
+                    at: new Date([2016, 5, 1])
+                }, {
+                    type: TimelineChart.TYPE.POINT,
+                    at: new Date([2016, 6, 1])
+                }, {
+                    type: TimelineChart.TYPE.POINT,
+                    at: new Date([2016, 7, 1])
+                }, {
+                    type: TimelineChart.TYPE.POINT,
+                    at: new Date([2016, 8, 1])
+                }, {
+                    type: TimelineChart.TYPE.POINT,
+                    at: new Date([2016, 9, 1])
+                }, {
+                    type: TimelineChart.TYPE.POINT,
+                    at: new Date([2016, 10, 1]),
+                    customClass: 'blue-dot'
+                }]
+            }];
+            var localeFormatter = d3.locale({
+                "decimal": ",",
+                "thousands": ".",
+                "grouping": [3],
+                "currency": ["", "€"],
+                "dateTime": "%a %b %e %X %Y",
+                "date": "%m/%d/%Y",
+                "time": "%H:%M:%S",
+                "periods": ["AM", "PM"],
+                "days": ["Domingo", "Luns", "Martes", "Mércores", "Xoves", "Venres", "Sábado"],
+                "shortDays": ["Do", "Lu", "Ma", "Mé", "Xo", "Ve", "Sa"],
+                "months": ["Xaneiro", "Febreiro", "Marzo", "Abril", "Maio", "Xuño", "Xullo", "Agosto", "Setembro", "Outubro", "Novembro", "Decembro"],
+                "shortMonths": ["Xan", "Feb", "Mar", "Abr", "Mai", "Xuñ", "Xul", "Ago", "Set", "Out", "Nov", "Dec"]
+            });
+            d3.time.format = localeFormatter.timeFormat;
+            var tickFormat = localeFormatter.timeFormat.multi([
+                ["%H:%M", function(d) { return d.getMinutes(); }],
+                ["%H:%M", function(d) { return d.getHours(); }],
+                ["%a %d", function(d) { return d.getDay() && d.getDate() != 1; }],
+                ["%b %d", function(d) { return d.getDate() != 1; }],
+                ["%B", function(d) { return d.getMonth(); }],
+                ["%Y", function() { return true; }]
+            ]);
+
+            const chart = new TimelineChart(div, data, {tickFormat: tickFormat});
+            const tickText = div.querySelector('g.tick text').textContent;
+            expect(tickText).toBe('Maio');
+        });
+    });
+
     function getDefaultSizeContainer() {
         const div = document.createElement('div');
         div.setAttribute('class', WRAPPER_CLASS);
