@@ -58,6 +58,52 @@ This allows you to define a minimum width for an interval element. Sometimes, wh
 ### tip (undefined)
 A function that receives as parameter a data point and returns an HTML text to be displayed as a tooltip
 
+### tickFormat (undefined)
+[D3 localization](https://github.com/d3/d3-3.x-api-reference/blob/master/Localization.md) support in order to translate x axis labels. Example:
+
+```javascript
+'use strict';
+const element = document.getElementById('chart');
+const data = [{
+    label: 'Name',
+    data: [{
+        type: TimelineChart.TYPE.POINT,
+        at: new Date([2016, 5, 1])
+    }, {
+        type: TimelineChart.TYPE.POINT,
+        at: new Date([2016, 6, 1])
+    }, {
+        type: TimelineChart.TYPE.POINT,
+        at: new Date([2016, 7, 1])
+    }]
+}];
+const localeFormatter = d3.locale({
+    "decimal": ",",
+    "thousands": ".",
+    "grouping": [3],
+    "currency": ["", "€"],
+    "dateTime": "%a %b %e %X %Y",
+    "date": "%m/%d/%Y",
+    "time": "%H:%M:%S",
+    "periods": ["AM", "PM"],
+    "days": ["Domingo", "Luns", "Martes", "Mércores", "Xoves", "Venres", "Sábado"],
+    "shortDays": ["Do", "Lu", "Ma", "Mé", "Xo", "Ve", "Sa"],
+    "months": ["Xaneiro", "Febreiro", "Marzo", "Abril", "Maio", "Xuño", "Xullo", "Agosto", "Setembro", "Outubro", "Novembro", "Decembro"],
+    "shortMonths": ["Xan", "Feb", "Mar", "Abr", "Mai", "Xuñ", "Xul", "Ago", "Set", "Out", "Nov", "Dec"]
+});
+d3.time.format = localeFormatter.timeFormat;
+const tickFormat = localeFormatter.timeFormat.multi([
+    ["%H:%M", function(d) { return d.getMinutes(); }],
+    ["%H:%M", function(d) { return d.getHours(); }],
+    ["%a %d", function(d) { return d.getDay() && d.getDate() != 1; }],
+    ["%b %d", function(d) { return d.getDate() != 1; }],
+    ["%B", function(d) { return d.getMonth(); }],
+    ["%Y", function() { return true; }]
+]);
+const chart = new TimelineChart(element, data, {tickFormat: tickFormat});
+
+```
+
 ## License
 
 The MIT License (MIT)
